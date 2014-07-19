@@ -1,0 +1,22 @@
+---
+# Effectively lifted from the Ansible documentation on EC2:
+# http://docs.ansible.com/ec2_module.html
+
+  - name: Provision an EC2 node
+    hosts: launched
+    connection: local
+    gather_facts: False
+    tags: provisioning
+    vars:
+      instance_type: t1.micro
+      security_group: sg_thingy
+      image: ami-00e8b452
+      region: ap-southeast-1
+      keypair: ansible-ec2
+    tasks:
+#      - name: Kill launched instances
+#	local_action: ec2 instance_ids="{{instance_id}}" region={{ region }} keypair={{ keypair }}
+
+      - name: Launch new Instance
+        local_action: ec2 instance_tags="Name=AnsibleTest" instance_ids={{ instance_id }} state=stopped group={{ security_group }} instance_type={{ instance_type}} image={{ image }} wait=true region={{ region }} keypair={{ keypair }}
+        register: ec2
